@@ -45,7 +45,20 @@ var RootQuery = new GraphQLObjectType({
                })
                 return json;
             }
+        },
+        students:
+        {
+            type: new GraphQLList(StudentType),
+            resolve(parentValue, args) {
+             var json = Student.find({},function(err,data){
+                   console.log(err);
+        console.log(data);
+                    return data;
+               })
+                return json;
+            }
         }
+
     }
 });
 
