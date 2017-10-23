@@ -14,7 +14,7 @@ var StudentSchema = new Schema({
 
                 required : [true , "email is required"]
            } } 
-});
+},{ strict: false });
 
 
 StudentSchema.path('email').validate(function(value, done) {

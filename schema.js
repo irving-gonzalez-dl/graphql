@@ -1,6 +1,7 @@
 var Student = require('mongoose').model('Student');
 
 
+var GraphQLJSON = require('graphql-type-json');
 var {
     GraphQLObjectType,
     GraphQLString,
@@ -35,20 +36,73 @@ var RootQuery = new GraphQLObjectType({
         {
             type: StudentType,
             args: {
-                id: { type: GraphQLString }
+                keys: { type: GraphQLJSON }
             },
             resolve(parentValue, args) {
-             var json = Student.findOne({  "_id": "59e43fcf9675e35e4c10db94" },function(err,data){
-                   console.log(err);
-        console.log(data);
+  
+         //  var ovj =    JSON.parse( args.keys);
+        console.log(args.keys);
+        //   console.log(ovj);
+          // console.log(ovj.name);
+ 
+             var json = Student.findOne(args.keys,function(err,data){
+               
+               console.log(err);
+               console.log(data);
                     return data;
                })
                 return json;
+            }
+        },
+
+        students: {
+            type: GraphQLJSON,
+            resolve(parentValue,args){
+
+                 var json = Student.find({},function(err,data){
+               
+               console.log(err);
+               console.log(data);
+                    return data;
+               });
+                return json;
+
+
             }
         }
     }
 });
 
+
+//mutations
+var MutationType = new GraphQLObjectType({
+  name: 'Mutations',
+  description: 'These are the things we can change',
+  fields: () => ({
+      addStudent: {
+      type: GraphQLString,
+      description: 'add a Student with id and return the student that was added',
+      args: {
+        keys: { type: GraphQLJSON }
+      },
+      resolve: (parentValue, args) => {
+   
+           var _mongooseStudent = new Student(args.keys);
+       var response =   _mongooseStudent.save(function(err){
+                    if(err){
+                        return err;
+                    }
+                    else return args.keys;
+            });
+               return response;
+
+      }
+    }
+  })
+});
+
+
 module.exports = new GraphQLSchema({
-    query: RootQuery
+    query: RootQuery,
+    mutation: MutationType
 });
