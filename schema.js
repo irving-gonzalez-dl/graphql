@@ -54,6 +54,7 @@ var RootQuery = new GraphQLObjectType({
                 return json;
             }
         },
+<<<<<<< HEAD
 
         students: {
             type: GraphQLJSON,
@@ -68,8 +69,21 @@ var RootQuery = new GraphQLObjectType({
                 return json;
 
 
+=======
+        students:
+        {
+            type: new GraphQLList(StudentType),
+            resolve(parentValue, args) {
+             var json = Student.find({},function(err,data){
+                   console.log(err);
+        console.log(data);
+                    return data;
+               })
+                return json;
+>>>>>>> 952f6f8bb058bc3df1add423e061479fc78cc1e0
             }
         }
+
     }
 });
 
